@@ -1,0 +1,24 @@
+CRONOS API Version 1.0
+Authors: The Open AgroClimate Project
+
+This class is a simple interface to the CRONOS API provided AS-IS by 
+The Open AgroClimate Project. For HTML documentation, please point your
+web browser to the docs/html/index.html found under this directory.
+
+===================
+Usage
+===================
+
+To use this class within your project, copy the cronos.php and lib directory
+from this directory into your project. This project depends on the 
+HttpClient.class.php file located under lib. If you desire to move this file,
+please change the reference for it found in cronos.php.
+
+===================
+Sample Usage
+===================
+
+The sample file (test.php) is to be run from the command line. You can run
+it from a web-browser, but the output will not be seen properly.
+
+> php test.php
