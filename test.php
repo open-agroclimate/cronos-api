@@ -15,13 +15,15 @@ foreach( $results as $r ) {
 }
 
 // Get daily weather information for the last week from ASOS network only.
-$startdate = date('Y-m-d', strtotime( '-1 week' ) );
-$daily = $c->getDailyData( $networks['ASOS'], $startdate );
-// print_r( $daily ); // Uncomment for raw data from $daily
+$startdate = date('Y-m-d h:m:s', strtotime( '-1 day' ));
+#$startdate = '2011--25';
+$daily = $c->getHourlyData( $networks['AWOS'], $startdate );
+//print_r( $daily ); // Uncomment for raw data from $daily
 
 // Display the average tempurature per station per day (simple loop)
 foreach( $daily as $d ) {
-  echo 'Average tempurature for station '.$d['station'].' on '.$d['ob'].' was '.$d['tempavg'].".\n";
+  echo 'Tempurature for station '.$d['station'].' on '.$d['ob'].' was '.$d['temp'].".\n";
 }
 echo "====================\nEnd run\n====================\n";
+echo "Max memory used: ".memory_get_peak_usage()."\n";
 ?>

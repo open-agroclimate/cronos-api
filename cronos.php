@@ -36,7 +36,7 @@
  */
 
 require_once('lib/HttpClient.class.php');
-
+ini_set('memory_limit','-1'); // EVIL HACK... need to deal with large datasets better
 /**
  * @class CRONOS
  * @brief The CRONOS class is the main interface to connect to the CRONOS database.
@@ -149,7 +149,7 @@ class CRONOS {
    */
   public function getHourlyData( $stations = array(), $start = "", $end = ""  ) {
     $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all' );
-    if( $end == '' ) {
+    if( $end != '' ) {
       $data['end'] = $end;
     }
     return $this->getStationData( $data );  
@@ -174,7 +174,7 @@ class CRONOS {
    */  
   public function getDailyData( $stations = array(),  $start = "", $end = "" ) {
     $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'D', 'parameter' => 'all' );
-    if( $end == '' ) {
+    if( $end != '' ) {
       $data['end'] = $end;
     }
     return $this->getStationData( $data );
@@ -182,9 +182,11 @@ class CRONOS {
   
   private function getStationData( $data ) {
     if( ! $this->http->get( '/dynamic_scripts/cronos/getCRONOSdata.php', $data ) ) {
-      echo 'Failed';
+      //echo 'DEBUG (QUERY:FAILED):: ',$this->http->getRequestURL()."\n";
+      echo 'Failed (getStationData)';
       return false;
     } else {
+      //echo 'DEBUG (QUERY):: '.$this->http->getRequestURL()."\n";
       return $this->parseToObject( $this->http->getContent() );
     }
   }
@@ -208,7 +210,7 @@ class CRONOS {
     $results = array();
     $token = strtok( $content, "\n" );
     while( $token !== false ) {
-      //echo "{$token}\n";  // Remove comments to get raw values from website displayed.
+      //echo "DEBUG:: {$token}\n";  // Remove comments to get raw values from website displayed.
       $tmp = array();
       // Parse the line here.
       if( substr( $token, 0, 1 ) == '#' || substr( $token, 0, 5 ) == '<pre>' ) {
