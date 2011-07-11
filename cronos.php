@@ -35,6 +35,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+if( ! defined( 'DEBUG_MODE' ) ) define('DEBUG_MODE', false);
+
 require_once('lib/HttpClient.class.php');
 ini_set('memory_limit','-1'); // EVIL HACK... need to deal with large datasets better
 /**
@@ -147,10 +150,13 @@ class CRONOS {
    * @return
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */
-  public function getHourlyData( $stations = array(), $start = "", $end = ""  ) {
+  public function getHourlyData( $stations = array(), $start = "", $end = "", $params = array()  ) {
     $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all' );
     if( $end != '' ) {
       $data['end'] = $end;
+    }
+    if( is_array( $params ) && count( $params ) > 0 ) {
+      $data['parameter'] = implode( ',', $params );
     }
     return $this->getStationData( $data );  
   }
@@ -172,21 +178,24 @@ class CRONOS {
    * @return
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */  
-  public function getDailyData( $stations = array(),  $start = "", $end = "" ) {
+  public function getDailyData( $stations = array(),  $start = "", $end = "", $params = array() ) {
     $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'D', 'parameter' => 'all' );
     if( $end != '' ) {
       $data['end'] = $end;
+    }
+    if( is_array( $params ) && count( $params ) > 0 ) {
+      $data['parameter'] = implode( ',', $params );
     }
     return $this->getStationData( $data );
   }
   
   private function getStationData( $data ) {
     if( ! $this->http->get( '/dynamic_scripts/cronos/getCRONOSdata.php', $data ) ) {
-      //echo 'DEBUG (QUERY:FAILED):: ',$this->http->getRequestURL()."\n";
+      if( DEBUG_MODE ) echo 'DEBUG (QUERY:FAILED):: ',$this->http->getRequestURL()."\n";
       echo 'Failed (getStationData)';
       return false;
     } else {
-      //echo 'DEBUG (QUERY):: '.$this->http->getRequestURL()."\n";
+      if( DEBUG_MODE ) echo 'DEBUG (QUERY):: '.$this->http->getRequestURL()."\n";
       return $this->parseToObject( $this->http->getContent() );
     }
   }
@@ -210,7 +219,7 @@ class CRONOS {
     $results = array();
     $token = strtok( $content, "\n" );
     while( $token !== false ) {
-      //echo "DEBUG:: {$token}\n";  // Remove comments to get raw values from website displayed.
+      if( DEBUG_MODE ) echo "DEBUG:: {$token}\n";  // Remove comments to get raw values from website displayed.
       $tmp = array();
       // Parse the line here.
       if( substr( $token, 0, 1 ) == '#' || substr( $token, 0, 5 ) == '<pre>' ) {
