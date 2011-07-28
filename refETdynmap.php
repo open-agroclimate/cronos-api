@@ -1,17 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
 <head>
-    <script src="http://hatteras.meas.ncsu.edu/hadinon/mapiconmaker.js" type="text/javascript"></script>
+    <script src="mapiconmaker.js" type="text/javascript"></script>
+    <!--Change below API key to your key.-->
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA88_iwxxb1RIDVcnydI6KqBRyqzClQTNiLXQmSpWrmK3wX-IJAhRGQXsmMoKmyTrgausL5dKC2HEbPA&sensor=false" type="text/javascript"></script>
-    <script type="text/javascript" src="http://www.nc-climate.ncsu.edu/klgore/Awesomeness3.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 </head>
 <body>
 <?php 
 //Get form inputs for the date specified by user. Break date into year, month, and day (for below link 
-//to chart in Google Info Window). Then, run the ET_dynamic function for that date to output results for ASOS, //AWOS, ECONET, USCRN, and RAWS stations.
+//to chart in Google Info Window). Then, run the ET_dynamic function for that date to output results for ASOS, AWOS, ECONET, USCRN, and RAWS stations.
         $startdate=strtotime($_REQUEST['date']);
         $yest = strtotime("-1 day");
         if(($startdate>=strtotime('2002-01-01')) && ($startdate<=$yest)){ ?>
@@ -51,7 +50,7 @@ table#layer2 {
 <script type="text/javascript">
 //Function to set up the Javascript calendar.
 $(function() {
-	    $("#datepicker").datepicker({showOn: 'button',buttonImage: 'http://www.nc-climate.ncsu.edu/hadinon/calendar.gif',buttonImageOnly: true, changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd', minDate: (new Date(2002, 1 - 1, 1)), maxDate: '-1D'});
+	    $("#datepicker").datepicker({showOn: 'button',buttonImage: 'calendar.gif',buttonImageOnly: true, changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd', minDate: (new Date(2002, 1 - 1, 1)), maxDate: '-1D'});
 });
 </script>
 <?php  
@@ -86,16 +85,14 @@ $start=date('Y-m-d',strtotime($_REQUEST['date']));
 $end=date('Y-m-d',strtotime($_REQUEST['date']));
 
 $daily = $c->getDailyData( $stations, $start, $end );
-//print_r( $daily ); // Uncomment for raw data from $daily
 
 // Display the reference ET per station per day (simple loop)
-//$et_estimate=0;
 foreach( $daily as $d ) {
     
   // Format the day of year for reference ET estimate
   $doy=date('z',strtotime($d['ob']));
   $doy=$doy+1;
-//ADD IN COMMAND TO NOT COMPUTE IF VALUES ARE NULL?
+
   // Compute the reference ET
   
   //include sravg!='' argument for ECONET and RAWS networks which record SR
@@ -111,10 +108,7 @@ foreach( $daily as $d ) {
   $stninfo[$d['station']]['etavg_inch']=($stninfo[$d['station']]['etavg']*0.03937007874);
   } 
   }
-  //echo $et_estimate."\n";
-  //echo "The reference ET for ".$d['ob']." is: ".$stninfo[$d['station']]['etavg']." at Station: ".$d['station']."at elevation, latitude, longitude, and network of: ".$stninfo[$d['station']]['elev'].",".$stninfo[$d['station']]['lat'].",".$stninfo[$d['station']]['lon'].",".$stninfo[$d['station']]['type']."\n";
- //NEXT STEP: CREATE MULTIDIMENSIONAL ARRAY TO OUTPUT NAME, COUNTY, CITY, STATE, START_DATE, END_DATE, AND ETAVG_INCH. ADD THIS INTO CODE FOR GOOGLE MAPS. LIMIT ET FROM 0 TO 10. SEND TO CHRIS!
- // echo "Name: ".$stninfo[$d['station']]['name'].", County: ".$stninfo[$d['station']]['county'].", City: ".$stninfo[$d['station']]['city'].", State: ".$stninfo[$d['station']]['state'].", Startdate: ".$stninfo[$d['station']]['startdate'].", Enddate: ".$stninfo[$d['station']]['enddate']."\n";
+
 }
 ?>
 
@@ -142,7 +136,7 @@ if($data['etavg']<=0 || $data['etavg']>10){
 //Create a new point with the station lat/lon's.
 var myLatLon = new GLatLng(<?php echo $data['lat']; ?>, <?php echo $data['lon']; ?>);
 
-//Set up the marker icon properties (width, height, color, shape, etc) based on unit requessted. Colorize the //marker based on the et value.
+//Set up the marker icon properties (width, height, color, shape, etc) based on unit requessted. Colorize the marker based on the et value.
 var iconOptions = {};
   iconOptions.width = 12;
   iconOptions.height = 12;
@@ -258,7 +252,7 @@ var iconOptions = {};
   //Create a new variable for the above marker specifications.
   var icon = MapIconMaker.createFlatIcon(iconOptions);
 
-  //Function to create a clickable marker and open an Info Window at each marker (dependent on requested //unit). Each marker has a link to explain station type, a link to display the annual chart, and a link to //obtain more information for that station from the main SCO CRONOS page.
+  //Function to create a clickable marker and open an Info Window at each marker (dependent on requested unit). Each marker has a link to explain station type, a link to display the annual chart, and a link to obtain more information for that station from the main SCO CRONOS page.
   function create<?php echo $station;?>Marker(myLatLon) {
 
   //Set up our GMarkerOptions object
@@ -281,7 +275,7 @@ var iconOptions = {};
 	  elseif($_REQUEST['unit']=='inches'){
 	    echo " inches";
 	  }
-echo "<br><br><form action='http://www.nc-climate.ncsu.edu/hadinon/refETdynchart.php?station=".$station."&year=".$Y."&unit=".$_REQUEST['unit']."' method='post' target='_blank'><input type='submit' name='day' value='View timeseries'></form></center>";
+echo "<br><br><form action='refETdynchart.php?station=".$station."&year=".$Y."&unit=".$_REQUEST['unit']."' method='post' target='_blank'><input type='submit' name='day' value='View timeseries'></form></center>";
 echo "<hr><b><u>Station Information:</u></b>"; echo "<br><br><b>Name: </b>"; echo $data['name']; echo " ("; echo $station; echo ")"; echo "<br><b>Location: </b>"; echo $data['city'].", ".$data['state']; echo "<br><b>Elevation: </b>"; echo $data['elev']; echo " feet above sea level"; echo "<br><b>Type: </b>"; echo $data['type']; 
 echo " <A href=# onClick=window.open('http://www.nc-climate.ncsu.edu/dynamic_scripts/cronos/types.php','meta_info','width=500,height=1000,scrollbars=yes,resizable=yes')>what does this mean?</A>"; echo "<br><b>Start Date: </b>"; echo $data['startdate']; echo "<br><b>End Date: </b>"; echo $data['enddate']; echo "<br><form action='http://www.nc-climate.ncsu.edu/cronos/?station=".$station."' method='post' target='_blank'><input type='submit' name='more_data' value='More data for this station'></form></div>";?>
     ");
@@ -311,7 +305,7 @@ else {
 }
 </script>
 <!--Display the date specified and and give the option to show another date.-->
-<form action="http://www.nc-climate.ncsu.edu/hadinon/refETdynmap.php" method="get">
+<form action="refETdynmap.php" method="get">
 <p><b><i>Select another date and unit of interest:</b></i></p>
                   <div class="demo">
                    <p>Date: <input type="text" name="date" id="datepicker" size="30"/>
@@ -328,10 +322,10 @@ else {
 		list($Y,$M,$D) = explode("-",$start);
 		  $next=date('Y-m-d',strtotime($start." +1 day"));
 		  $prev=date('Y-m-d',strtotime($start." -1 day"));
-		  echo "<A href='http://www.nc-climate.ncsu.edu/hadinon/refETdynmap.php?date=".$prev."&unit=".$_REQUEST['unit']."','prev_date')>Previous day</A>";
+		  echo "<A href='refETdynmap.php?date=".$prev."&unit=".$_REQUEST['unit']."','prev_date')>Previous day</A>";
 		$ET_date = date("F j, Y", mktime(0,0,0,$M,$D,$Y));
 	          echo "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp ".$ET_date."&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
-                  echo "<A href='http://www.nc-climate.ncsu.edu/hadinon/refETdynmap.php?date=".$next."&unit=".$_REQUEST['unit']."','next_date')>Next day</A>";?></b></p>
+                  echo "<A href='refETdynmap.php?date=".$next."&unit=".$_REQUEST['unit']."','next_date')>Next day</A>";?></b></p>
     <div id="mapcanvasTEST_ET"></div></center>
     <?php
   //Set up color key for unit of mm.

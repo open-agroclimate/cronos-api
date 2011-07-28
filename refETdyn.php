@@ -1,11 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
 <head>
-    <script src="http://hatteras.meas.ncsu.edu/hadinon/mapiconmaker.js" type="text/javascript"></script>
+    <script src="mapiconmaker.js" type="text/javascript"></script>
+    <!--Change below API key to your key.-->
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA88_iwxxb1RIDVcnydI6KqBRyqzClQTNiLXQmSpWrmK3wX-IJAhRGQXsmMoKmyTrgausL5dKC2HEbPA&sensor=false" type="text/javascript"></script>
-    <script type="text/javascript" src="http://www.nc-climate.ncsu.edu/klgore/Awesomeness3.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 </head>
 <body>
@@ -58,9 +57,9 @@ foreach( $results as $r ) {
 <script type="text/javascript">
 //Function to set up the Javascript calendar.
 $(function() {
-	    $("#datepicker").datepicker({showOn: 'both', buttonImage: 'http://www.nc-climate.ncsu.edu/hadinon/calendar.gif', buttonImageOnly: true, changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd', minDate: (new Date(2002, 1 - 1, 1)), maxDate: '-1D'});
+	    $("#datepicker").datepicker({showOn: 'both', buttonImage: 'calendar.gif', buttonImageOnly: true, changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd', minDate: (new Date(2002, 1 - 1, 1)), maxDate: '-1D'});
 });
-//maxDate:(new Date(2009,10-1,20))
+
 //Set up the map and its properties (location, type, and user controls).
 function initialize3() {
  if (GBrowserIsCompatible()) { 
@@ -89,7 +88,7 @@ var iconOptions = {};
   //Create a new variable for the above marker specifications.
   var icon = MapIconMaker.createFlatIcon(iconOptions);
 
-   //Function to create a clickable marker and open an Info Window at each marker. Each marker has a link to //explain station type.
+   //Function to create a clickable marker and open an Info Window at each marker. Each marker has a link to explain station type.
   function create<?php echo $station;?>Marker(myLatLon) {
 
   //Set up our GMarkerOptions object
@@ -124,7 +123,7 @@ else {
  window.attachEvent( "onunload", GUnload ); 
 }
 </script>
-<form action="http://www.nc-climate.ncsu.edu/hadinon/refETdynmap.php" method="get">
+<form action="refETdynmap.php" method="get">
 <p><b><i>Please select your date and unit of interest.</b></i></p>
                   <div class="demo">
                    <p>Date: <input type="text" name="date" id="datepicker" size="30"/>

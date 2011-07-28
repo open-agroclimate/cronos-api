@@ -1,11 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
 <head>
-    <script src="http://hatteras.meas.ncsu.edu/hadinon/mapiconmaker.js" type="text/javascript"></script>
+    <script src="mapiconmaker.js" type="text/javascript"></script>
+    <!--Change below API key to your key.-->
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA88_iwxxb1RIDVcnydI6KqBRyqzClQTNiLXQmSpWrmK3wX-IJAhRGQXsmMoKmyTrgausL5dKC2HEbPA&sensor=false" type="text/javascript"></script>
-    <script type="text/javascript" src="http://www.nc-climate.ncsu.edu/klgore/Awesomeness3.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 </head>
 <body>
@@ -46,21 +45,17 @@ foreach ($results as $r){
 
 //Start and enddates from above. Put this into multi-dimensional array?
 $start=$stninfo['startdate'];
-//date('Y-m-d',strtotime($_REQUEST['date']));
 $end=$stninfo['enddate'];
-//date('Y-m-d',strtotime($_REQUEST['date']));
 
 $daily = $c->getDailyData( $stations, $start, $end );
-//print_r( $daily ); // Uncomment for raw data from $daily
 
 // Display the reference ET per station per day (simple loop)
-//$et_estimate=0;
 foreach( $daily as $d ) {
     
   // Format the day of year for reference ET estimate
   $doy=date('z',strtotime($d['ob']));
   $doy=$doy+1;
-//ADD IN COMMAND TO NOT COMPUTE IF VALUES ARE NULL?
+
   // Compute the reference ET
   
   //include sravg!='' argument for ECONET and RAWS networks which record SR
@@ -81,11 +76,6 @@ foreach( $daily as $d ) {
   list($Y,$M,$D)=explode("-",$date);
   $m=$M-1;
   $stninfo['data'][$d['ob']]['date']="new Date (".($Y+0).", ".($m+0).", ".($D+0).")";
-  //echo "HELLO";
-  //echo $et_estimate."\n";
-  //echo "The reference ET for ".$d['ob']." is: ".$stninfo['data'][$d['ob']]['etavg']." at Station: ".$d['station']."at elevation, latitude, longitude, and network of: ".$stninfo['elev'].",".$stninfo['lat'].",".$stninfo['lon'].",".$stninfo['type']."\n";
- //NEXT STEP: CREATE MULTIDIMENSIONAL ARRAY TO OUTPUT NAME, COUNTY, CITY, STATE, START_DATE, END_DATE, AND ETAVG_INCH. ADD THIS INTO CODE FOR GOOGLE MAPS. LIMIT ET FROM 0 TO 10. SEND TO CHRIS!
- // echo "Name: ".$stninfo['name'].", County: ".$stninfo['county'].", City: ".$stninfo['city'].", State: ".$stninfo['state'].", Startdate: ".$stninfo['startdate'].", Enddate: ".$stninfo['enddate']."\n";
 }
 
 ?>
@@ -97,7 +87,7 @@ foreach( $daily as $d ) {
   data.addColumn('date', 'Date');
   data.addColumn('number', 'Calculated Daily PM ET');
 <?php
-//Loop through results and put them into array called $data. Output results for annotated timeline (dependent //on requested unit).
+//Loop through results and put them into array called $data. Output results for annotated timeline (dependent on requested unit).
 $row=0;
 foreach($stninfo['data'] as $data){
    if($data['etavg']<=0 || $data['etavg']>10){ 
@@ -131,13 +121,13 @@ foreach($stninfo['data'] as $data){
 echo "<p><b>Station: </b>".$stninfo['name']." (".$stninfo['station'].")<br><b>Type: </b>".$stninfo['type']." <A href=# onClick=window.open('http://www.nc-climate.ncsu.edu/dynamic_scripts/cronos/types.php','link','width=500,height=1000,scrollbars=yes')>what does this mean?</A> <br><b>Elevation: </b>".$stninfo['elev']." feet above sea level<br><b>Location: </b>".$stninfo['city'].", ".$stninfo['state']."<br><b>Start Date: </b>".$stninfo['startdate']."<br><b>End Date: </b>".$stninfo['enddate']."</p>";?>
 <p><table id="chart_table"><tr>
 <?php If($_REQUEST['unit']=='inches'){ ?>
-  <td><form action="http://www.nc-climate.ncsu.edu/hadinon/refETdynchart.php?station=<?php echo $stninfo['station'];?>&year=<?php echo $_REQUEST['year'];?>&unit=mm" method="post">
+  <td><form action="refETdynchart.php?station=<?php echo $stninfo['station'];?>&year=<?php echo $_REQUEST['year'];?>&unit=mm" method="post">
   <input type="submit" name="units" value="Display mm">
   </form></td>
 <?php }
 elseif($_REQUEST['unit']=='mm'){
 ?>
-  <td><form action="http://www.nc-climate.ncsu.edu/hadinon/refETdynchart.php?station=<?php echo $stninfo['station'];?>&year=<?php echo $_REQUEST['year'];?>&unit=inches" method="post">
+  <td><form action="refETdynchart.php?station=<?php echo $stninfo['station'];?>&year=<?php echo $_REQUEST['year'];?>&unit=inches" method="post">
   <input type="submit" name="units" value="Display inches">
   </form></td>
 <?php }
@@ -147,6 +137,6 @@ elseif($_REQUEST['unit']=='mm'){
   </form></td></tr></table></p>
 <p><u><b><?php echo "Time Series of FAO56 Penman-Monteith Estimated Reference Evapotranspiration";?></u></b></p>
 <div id="visualization" style="width: 800px; height: 400px;"></div>
-<br><br><p align='left'><img src='http://www.nc-climate.ncsu.edu/hadinon/get_adobe_flash_player.png' width='158' height='39' border='0' usemap='#Map'><map name='Map'><area shape='rect' coords='0,0,162,44' href='http://get.adobe.com/flashplayer/?promoid=BUIGP'></map></p>
+<br><br><p align='left'><img src='get_adobe_flash_player.png' width='158' height='39' border='0' usemap='#Map'><map name='Map'><area shape='rect' coords='0,0,162,44' href='http://get.adobe.com/flashplayer/?promoid=BUIGP'></map></p>
 </body>
 </html>
