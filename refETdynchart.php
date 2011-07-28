@@ -15,6 +15,8 @@ table#chart_table{
 </style>
 
 <?php  
+//Obtain metadata for requested station (displayed directly on webpage, see below), and compute the reference ET for period of record at that station. 
+
 require_once( 'cronos.php' );
 require_once( 'ETfunctionAPI.php' );
 
@@ -23,6 +25,7 @@ $c = new CRONOS( '2a46c43c6354e1eb94b1303d8af9b923641fde35780d688a1a8c915b8e3c4'
 // Collect data for requested station.
 $results = $c->listStations( array(), array(), array($_REQUEST['station']), array(), true );
 
+// Collect the station and metadata.
 $stations=array();
 $stninfo=array();
 
@@ -43,29 +46,29 @@ foreach ($results as $r){
        
 }
 
-//Start and enddates from above. Put this into multi-dimensional array?
+// Define start and enddates.
 $start=$stninfo['startdate'];
 $end=$stninfo['enddate'];
 
+// Get some data for requested dates and station.
 $daily = $c->getDailyData( $stations, $start, $end );
 
-// Display the reference ET per station per day (simple loop)
+// Compute the reference ET per day at requested station.
 foreach( $daily as $d ) {
     
   // Format the day of year for reference ET estimate
   $doy=date('z',strtotime($d['ob']));
   $doy=$doy+1;
 
-  // Compute the reference ET
-  
-  //include sravg!='' argument for ECONET and RAWS networks which record SR
+  // Exclude the six meteorological input parameters if any are NULL (ie. do not compute reference ET if input parameters are NULL). 
+  // Also, include sravg!='' argument in this if statement for ECONET and RAWS networks which record solar radiation.
   if($stninfo['type']=='ECONET' || $stninfo['type']=='RAWS'){
   if($d['sravg']!='' && $d['tempmax']!='' && $d['tempmin']!='' && $d['wsavg']!='' && $d['rhmax']!='' && $d['rhmin']!=''){
   $stninfo['data'][$d['ob']]['etavg']=HargreavesRad_ET_estimate($stninfo['type'],$d['sravg'],$d['tempmax'],$d['tempmin'],$d['wsavg'],$d['rhmax'],$d['rhmin'],$doy,$stninfo['elev'],$stninfo['lat'],$stninfo['lon']);
   $stninfo['data'][$d['ob']]['etavg_inch']=($stninfo['data'][$d['ob']]['etavg']*0.03937007874);
   }
   }else{
-    //exclude sravg!='' argument for ASOS/AWOS since this parameter is always NULL for those networks.
+  //exclude sravg!='' argument for ASOS/AWOS since this parameter is always NULL for those networks (they do not record solar radiation).
   if($d['tempmax']!='' && $d['tempmin']!='' && $d['wsavg']!='' && $d['rhmax']!='' && $d['rhmin']!=''){
   $stninfo['data'][$d['ob']]['etavg']=HargreavesRad_ET_estimate($stninfo['type'],$d['sravg'],$d['tempmax'],$d['tempmin'],$d['wsavg'],$d['rhmax'],$d['rhmin'],$doy,$stninfo['elev'],$stninfo['lat'],$stninfo['lon']);
   $stninfo['data'][$d['ob']]['etavg_inch']=($stninfo['data'][$d['ob']]['etavg']*0.03937007874);
@@ -80,19 +83,23 @@ foreach( $daily as $d ) {
 
 ?>
 <script type="text/javascript">
-//Set up Google Annotated Timeline properties (date as a date and add an ET line).
+//Set up Google Annotated Timeline properties (date as a date and add a reference ET line).
     google.load('visualization', '1', {packages: ['annotatedtimeline']});
     function drawVisualization() {
    var data = new google.visualization.DataTable();
   data.addColumn('date', 'Date');
   data.addColumn('number', 'Calculated Daily PM ET');
 <?php
-//Loop through results and put them into array called $data. Output results for annotated timeline (dependent on requested unit).
+//Loop through results and put them into array called $data.
 $row=0;
 foreach($stninfo['data'] as $data){
+
+   // If reference ET estimates are not between 0 and 10, do not show on map (ie. continue to next iteration of loop).
    if($data['etavg']<=0 || $data['etavg']>10){ 
    continue;
    }?>
+  
+  // Output results for annotated timeline.
   data.addRows(1);
   data.setValue(<?php echo $row;?>, 0, <?php  echo $data['date'];?>);
   data.setValue(<?php echo $row;?>, 1, <?php If($_REQUEST['unit']=='mm'){echo $data['etavg'];}
@@ -104,9 +111,8 @@ foreach($stninfo['data'] as $data){
       //Specify timeline properties.
       annotatedtimeline.draw(data, { 'displayAnnotations': true,
                                     'allValuesSuffix': '<?php If($_REQUEST['unit']=='mm'){echo " mm";}
-				    elseif($_REQUEST['unit']=='inches'){echo " inches";}?>', 
-                                    // A suffix that is added to all values
-				    'colors':['green'], // The colors to be used
+				    elseif($_REQUEST['unit']=='inches'){echo " inches";}?>', // A suffix that is added to all values
+   				            'colors':['green'], // The colors to be used
                                     'displayExactValues': true, // Do not truncate values (i.e. using K suffix)
                                     'legendPosition': 'newRow', // Can be sameRow
                                     'zoomStartTime': new Date(<?php echo $_REQUEST['year'];?>, 0 ,1), 

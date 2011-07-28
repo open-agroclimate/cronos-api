@@ -24,9 +24,9 @@ div#mapcanvasTEST_ET {
 </style>
 
 <?php
-//Display unique stations on Google map.
+//Obtain metadata for displaying stations on Google map (below).
+
 require_once( 'cronos.php' );
-require_once( 'ETfunctionAPI.php' );
 
 $c = new CRONOS( '2a46c43c6354e1eb94b1303d8af9b923641fde35780d688a1a8c915b8e3c4' ); // Replace with your API key.
 
@@ -55,6 +55,7 @@ foreach( $results as $r ) {
 <script type="text/javascript" src="http://jqueryui.com/latest/ui/jquery.ui.core.js"></script>
 <script type="text/javascript" src="http://jqueryui.com/latest/ui/jquery.ui.datepicker.js"></script>
 <script type="text/javascript">
+
 //Function to set up the Javascript calendar.
 $(function() {
 	    $("#datepicker").datepicker({showOn: 'both', buttonImage: 'calendar.gif', buttonImageOnly: true, changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd', minDate: (new Date(2002, 1 - 1, 1)), maxDate: '-1D'});
@@ -70,9 +71,10 @@ function initialize3() {
   map.disableScrollWheelZoom();
   map.disableDoubleClickZoom();
 <?php
+//Loop through results and put them into two seperate arrays, $station and $data, using the list function.
 while(list($station,$data)=each($stninfo)){
 ?>
-//Create a new point with the station lat/lon's.
+//Create a new point with the station lat/lon.
 var myLatLon = new GLatLng(<?php echo $data['lat']; ?>, <?php echo $data['lon']; ?>);
 
 //Set up the marker icon properties (width, height, color, shape, etc).
@@ -88,7 +90,8 @@ var iconOptions = {};
   //Create a new variable for the above marker specifications.
   var icon = MapIconMaker.createFlatIcon(iconOptions);
 
-   //Function to create a clickable marker and open an Info Window at each marker. Each marker has a link to explain station type.
+  //Function to create a clickable marker and open an Info Window at each marker. 
+  //Each marker has station metadata and a link to explain station type.
   function create<?php echo $station;?>Marker(myLatLon) {
 
   //Set up our GMarkerOptions object

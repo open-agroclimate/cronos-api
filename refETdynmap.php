@@ -9,8 +9,7 @@
 </head>
 <body>
 <?php 
-//Get form inputs for the date specified by user. Break date into year, month, and day (for below link 
-//to chart in Google Info Window). Then, run the ET_dynamic function for that date to output results for ASOS, AWOS, ECONET, USCRN, and RAWS stations.
+        //Get form inputs for the date specified by user. Then, make sure that requested date is between 2002-01-01 and yesterday.
         $startdate=strtotime($_REQUEST['date']);
         $yest = strtotime("-1 day");
         if(($startdate>=strtotime('2002-01-01')) && ($startdate<=$yest)){ ?>
@@ -48,12 +47,14 @@ table#layer2 {
 <script type="text/javascript" src="http://jqueryui.com/latest/ui/jquery.ui.core.js"></script>
 <script type="text/javascript" src="http://jqueryui.com/latest/ui/jquery.ui.datepicker.js"></script>
 <script type="text/javascript">
+
 //Function to set up the Javascript calendar.
 $(function() {
 	    $("#datepicker").datepicker({showOn: 'button',buttonImage: 'calendar.gif',buttonImageOnly: true, changeMonth: true, changeYear: true, dateFormat: 'yy-mm-dd', minDate: (new Date(2002, 1 - 1, 1)), maxDate: '-1D'});
 });
 </script>
 <?php  
+//Obtain metadata for displaying stations on Google map (below), and compute the reference ET for requested date. 
 
 require_once( 'cronos.php' );
 require_once( 'ETfunctionAPI.php' );
@@ -81,28 +82,29 @@ foreach( $results as $r ) {
   $stninfo[$r['station']]['enddate'] = $r['enddate'];
 }
 
+// Define start and enddates.
 $start=date('Y-m-d',strtotime($_REQUEST['date']));
 $end=date('Y-m-d',strtotime($_REQUEST['date']));
 
+// Get some data for requested date and stations.
 $daily = $c->getDailyData( $stations, $start, $end );
 
-// Display the reference ET per station per day (simple loop)
+// Compute the reference ET per station per day.
 foreach( $daily as $d ) {
     
   // Format the day of year for reference ET estimate
   $doy=date('z',strtotime($d['ob']));
   $doy=$doy+1;
-
-  // Compute the reference ET
   
-  //include sravg!='' argument for ECONET and RAWS networks which record SR
+  // Exclude the six meteorological input parameters if any are NULL (ie. do not compute reference ET if input parameters are NULL). 
+  // Also, include sravg!='' argument in this if statement for ECONET and RAWS networks which record solar radiation.
   if($stninfo[$d['station']]['type']=='ECONET' || $stninfo[$d['station']]['type']=='RAWS'){
   if($d['sravg']!='' && $d['tempmax']!='' && $d['tempmin']!='' && $d['wsavg']!='' && $d['rhmax']!='' && $d['rhmin']!=''){
   $stninfo[$d['station']]['etavg']=HargreavesRad_ET_estimate($stninfo[$d['station']]['type'],$d['sravg'],$d['tempmax'],$d['tempmin'],$d['wsavg'],$d['rhmax'],$d['rhmin'],$doy,$stninfo[$d['station']]['elev'],$stninfo[$d['station']]['lat'],$stninfo[$d['station']]['lon']);
   $stninfo[$d['station']]['etavg_inch']=($stninfo[$d['station']]['etavg']*0.03937007874);
   }
   }else{
-    //exclude sravg!='' argument for ASOS/AWOS since this parameter is always NULL for those networks.
+  //exclude sravg!='' argument for ASOS/AWOS since this parameter is always NULL for those networks (they do not record solar radiation).
   if($d['tempmax']!='' && $d['tempmin']!='' && $d['wsavg']!='' && $d['rhmax']!='' && $d['rhmin']!=''){
   $stninfo[$d['station']]['etavg']=HargreavesRad_ET_estimate($stninfo[$d['station']]['type'],$d['sravg'],$d['tempmax'],$d['tempmin'],$d['wsavg'],$d['rhmax'],$d['rhmin'],$doy,$stninfo[$d['station']]['elev'],$stninfo[$d['station']]['lat'],$stninfo[$d['station']]['lon']);
   $stninfo[$d['station']]['etavg_inch']=($stninfo[$d['station']]['etavg']*0.03937007874);
@@ -124,19 +126,22 @@ map.disableScrollWheelZoom();
 map.disableDoubleClickZoom();
 
 <?php
-    //Used below to feed a year to chart product, and for defining previous and next dates.
+    //Break date into year, month, and day. This is used below to feed a year to chart product, and for formatting date to display on webpage.
     list($Y,$M,$D) = explode("-",$start);
 
-//Loop through results and put them into two seperate arrays with the list function ($station and $data).
+//Loop through results and put them into two seperate arrays, $station and $data, using the list function.
 while(list($station,$data)=each($stninfo)){
+
+// If reference ET estimates are not between 0 and 10, do not show on map (ie. continue to next iteration of loop).
 if($data['etavg']<=0 || $data['etavg']>10){ 
    continue;
    }
    ?>
-//Create a new point with the station lat/lon's.
+
+//Create a new point with the station lat/lon.
 var myLatLon = new GLatLng(<?php echo $data['lat']; ?>, <?php echo $data['lon']; ?>);
 
-//Set up the marker icon properties (width, height, color, shape, etc) based on unit requessted. Colorize the marker based on the et value.
+//Set up the marker icon properties (width, height, color, shape, etc) based on unit requessted. Colorize the marker based on the estimated reference ET value.
 var iconOptions = {};
   iconOptions.width = 12;
   iconOptions.height = 12;
@@ -252,7 +257,9 @@ var iconOptions = {};
   //Create a new variable for the above marker specifications.
   var icon = MapIconMaker.createFlatIcon(iconOptions);
 
-  //Function to create a clickable marker and open an Info Window at each marker (dependent on requested unit). Each marker has a link to explain station type, a link to display the annual chart, and a link to obtain more information for that station from the main SCO CRONOS page.
+  //Function to create a clickable marker and open an Info Window at each marker. 
+  //Each marker contains station metadata, the reference ET value, a link to explain station type, 
+  //a link to display the annual chart, and a link to obtain more information for that station from the CRONOS page hosted by the NC State Climate Office.
   function create<?php echo $station;?>Marker(myLatLon) {
 
   //Set up our GMarkerOptions object
@@ -475,6 +482,7 @@ else {
       </table>
       <?php } 
      } 
+     // If requested date is not between 2002-01-01 and yesterday, report this error message.
      else{
         echo "<p><b><i><font size='4'>***Please go back and select a date between January 1, 2002 and yesterday.</i></b></p></font>";
      } ?>

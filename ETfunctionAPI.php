@@ -1,5 +1,5 @@
 <?php
-// Function to calculate Penman-Monteith estimate of evapotranspiration using inputs (and required units to be read into the function)
+// Function to calculate Penman-Monteith estimate of reference evapotranspiration using inputs (and required units to be read into the function)
 //of station type (limited to ASOS, AWOS, RAWS, and ECONet), daily avg SR in W/m2, daily max/min temp in degreesC,
 //daily avg wind speed in m/s, daily min/max relative humidity in %, day of year, elevation in feet above sea level, and lat/lon in degrees.
 //Please note: ASOS and AWOS networks do not report solar radiation so Hargreaves' solar radiation estimation technique is used.

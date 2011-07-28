@@ -14,7 +14,7 @@ To use this tool within your project, copy the cronos.php, ETfunctionAPI.php, re
 Known Limitations/Caveats
 ==========================
 
-1) Due to a limitation with the API (currently being fixed), the six daily meteorological input parameters for the reference ET estimate (min/max temperature, min/max relative humidity, average wind speed, and average solar radiation) will be computed even if <80% of the hourly data is available to compute these daily values. This could lead to errors in the reference ET output.
+1) Due to a limitation with the CRONOS API (currently being fixed), the six daily meteorological input parameters for the reference ET estimate (min/max temperature, min/max relative humidity, average wind speed, and average solar radiation) will be computed from hourly data even if <80% of the hourly data is available to compute these daily values. This could lead to bad values being output from the reference ET calculation.
 
 2) Currently, the link to the "Main Page" points to the reference ET tool hosted by the State Climate Office --this will be fixed soon.
 
