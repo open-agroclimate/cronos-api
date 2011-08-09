@@ -81,6 +81,9 @@ class CRONOS {
    * @param array $states
    *  The states you want included in the list. By passing an empty array, you will receive all the states available. DEFAULT: array()
    *
+   * @param array $station
+   *  The stations you want included in the list. By passing an empty array, you will receive all the stations available. DEFAULT: array()
+   *
    * @param array $exclude_networks
    *   The networks you would like excluded from the list. By passing an empty array, you will not exclude any networks. DEFAULT: array()
    *
@@ -104,12 +107,14 @@ class CRONOS {
    *   - enddate: Date this station last reported
    *   - active: 1 is the station is active, 0 if it is not.
    */
-  public function listStations( $networks = array(), $states = array(), $exclude_networks = array(), $active_only = false ) {
+  public function listStations( $networks = array(), $states = array(), $station = array(), $exclude_networks = array(), $active_only = false ) {
     $nets = implode( ',', $networks );
     $sts  = implode( ',', $states );
+    $stn = implode( ',', $station );
     $data = array();
     $data['network'] = $nets;
     $data['state']   = $sts;
+    $data['station'] = $stn;
     $data['hash']    = $this->hash;
     
     if( count( $exclude_networks ) !== 0 ) {
@@ -145,13 +150,13 @@ class CRONOS {
    *   A starting datetime string formatted as YYYY-MM-DD hh:mm:ss  DEFAULT: ''
    *
    * @param string $end
-   *   A ending datetime string formatted as YYY-MM-DD hh:mm:ss  DEFAULT: ''
+   *   A ending datetime string formatted as YYYY-MM-DD hh:mm:ss  DEFAULT: ''
    *
    * @return
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */
   public function getHourlyData( $stations = array(), $start = "", $end = "", $params = array()  ) {
-    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all' );
+    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all', 'qc' => 'good' );
     if( $end != '' ) {
       $data['end'] = $end;
     }
@@ -173,13 +178,13 @@ class CRONOS {
    *   A starting date string formatted as YYYY-MM-DD DEFAULT: ''
    *
    * @param string $end
-   *   A ending date string formatted as YYY-MM-DD DEFAULT: ''
+   *   A ending date string formatted as YYYY-MM-DD DEFAULT: ''
    *
    * @return
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */  
   public function getDailyData( $stations = array(),  $start = "", $end = "", $params = array() ) {
-    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'D', 'parameter' => 'all' );
+    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'D', 'parameter' => 'all', 'qc' => 'good' );
     if( $end != '' ) {
       $data['end'] = $end;
     }
