@@ -38,7 +38,7 @@
 
 if( ! defined( 'DEBUG_MODE' ) ) define('DEBUG_MODE', false);
 
-require_once('lib/HttpClient.class.php');
+require_once('./lib/HttpClient.class.php');
 ini_set('memory_limit','-1'); // EVIL HACK... need to deal with large datasets better
 /**
  * @class CRONOS
@@ -155,13 +155,16 @@ class CRONOS {
    * @return
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */
-  public function getHourlyData( $stations = array(), $start = "", $end = "", $params = array()  ) {
+  public function getHourlyData( $stations = array(), $start = "", $end = "", $params = array(), $qc => ''  ) {
     $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all', 'qc' => 'good' );
     if( $end != '' ) {
       $data['end'] = $end;
     }
     if( is_array( $params ) && count( $params ) > 0 ) {
       $data['parameter'] = implode( ',', $params );
+    }
+    if( is_string( $quality ) && ( strtolower( $quality ) == 'good' || strtolower( $quality ) == 'bad' ) ) {
+    	$data['qc'] = $quality;
     }
     return $this->getStationData( $data );  
   }
@@ -180,21 +183,31 @@ class CRONOS {
    * @param string $end
    *   A ending date string formatted as YYYY-MM-DD DEFAULT: ''
    *
+   * @param array $params
+   *  A list of parameters to be requested from the CRONOS database. These are variable between station types. For a full list of parameters, please see @ref http://cirrus.meas.ncsu.edu/trac/wiki/Params DEFAULT: array() => 'all'
+   *
+   * @param string $quality
+   *  The quality control restriction level to be applied to this query. Can be 'good', 'bad', or undefined for all data.
+   *
    * @return
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */  
-  public function getDailyData( $stations = array(),  $start = "", $end = "", $params = array() ) {
-    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'D', 'parameter' => 'all', 'qc' => 'good' );
+  public function getDailyData( $stations = array(),  $start = "", $end = "", $params = array(), $quality = '' ) {
+    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'D', 'parameter' => 'all' );
     if( $end != '' ) {
       $data['end'] = $end;
     }
     if( is_array( $params ) && count( $params ) > 0 ) {
       $data['parameter'] = implode( ',', $params );
     }
+
+    if( is_string( $quality ) && ( strtolower( $quality ) == 'good' || strtolower( $quality ) == 'bad' ) ) {
+    	$data['qc'] = $quality;
+    }
     return $this->getStationData( $data );
   }
   
-  private function getStationData( $data ) {
+  private function getStationData( $data ) {  
     if( ! $this->http->get( '/dynamic_scripts/cronos/getCRONOSdata.php', $data ) ) {
       if( DEBUG_MODE ) echo 'DEBUG (QUERY:FAILED):: ',$this->http->getRequestURL()."\n";
       echo 'Failed (getStationData)';
