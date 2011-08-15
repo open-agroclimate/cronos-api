@@ -1,7 +1,7 @@
 <?php
 define( 'DEBUG_MODE', true );
 
-require_once( 'cronos.php' );
+require_once( './cronos.php' );
 
 
 $c = new CRONOS( '123abc' ); // Replace with your API key.

@@ -38,7 +38,7 @@
 
 if( ! defined( 'DEBUG_MODE' ) ) define('DEBUG_MODE', false);
 
-require_once('./lib/HttpClient.class.php');
+require_once( dirname(__FILE__).'/lib/HttpClient.class.php' );
 ini_set('memory_limit','-1'); // EVIL HACK... need to deal with large datasets better
 /**
  * @class CRONOS
@@ -155,7 +155,7 @@ class CRONOS {
    * @return
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */
-  public function getHourlyData( $stations = array(), $start = "", $end = "", $params = array(), $qc => ''  ) {
+  public function getHourlyData( $stations = array(), $start = "", $end = "", $params = array(), $quality = ''  ) {
     $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all', 'qc' => 'good' );
     if( $end != '' ) {
       $data['end'] = $end;
