@@ -45,10 +45,6 @@ ini_set('memory_limit','-1'); // EVIL HACK... need to deal with large datasets b
  * @brief The CRONOS class is the main interface to connect to the CRONOS database.
  *
  * This class is used to connect to the CRONOS database. It provides a connection handler and convenience functions.
- *
- * @todo Add quality control flags to getHourlyData and getDailyData. (CV)
- * @todo Add ability to parse the comments for parameters and station metadata (CV)
- * @todo Organize the hourly and daily output array by [station][date] = data vs. a list. (CV)
  */
 class CRONOS {
   private $http;
@@ -124,10 +120,11 @@ class CRONOS {
     }
     
     if( ! $this->http->get('/dynamic_scripts/cronos/getCRONOSinventory.php', $data ) ) {
+      if( DEBUG_MODE ) echo 'DEBUG (QUERY:FAILED):: ',$this->http->getRequestURL()."\n";
       return false;
     } else {
       $results = $this->parseToObject( $this->http->getContent() );
-      
+      if( DEBUG_MODE ) echo 'DEBUG (QUERY:FAILED):: ',$this->http->getRequestURL()."\n";
       if( ( ! is_null( $this->filters ) ) && ( array_key_exists( 'exclude_networks', $this->filters ) ) ) {
         $results = array_filter( $results, array( $this, 'exclude_networks' ) );
       }      
@@ -156,7 +153,7 @@ class CRONOS {
    *   An indexed array of associative arrays. The associcative arrays consist of the data provided by the station. They may or may not be consistant across networks.
    */
   public function getHourlyData( $stations = array(), $start = "", $end = "", $params = array(), $quality = ''  ) {
-    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all', 'qc' => 'good' );
+    $data = array( 'station' => implode( $stations, ',' ), 'hash' => $this->hash, 'start' => $start, 'obtype' => 'H', 'parameter' => 'all' );
     if( $end != '' ) {
       $data['end'] = $end;
     }
