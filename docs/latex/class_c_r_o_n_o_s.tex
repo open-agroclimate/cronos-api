@@ -1,0 +1,164 @@
+\hypertarget{class_c_r_o_n_o_s}{
+\section{\-C\-R\-O\-N\-O\-S \-Class \-Reference}
+\label{class_c_r_o_n_o_s}\index{\-C\-R\-O\-N\-O\-S@{\-C\-R\-O\-N\-O\-S}}
+}
+
+
+\-The \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} class is the main interface to connect to the \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} database.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_c_r_o_n_o_s_a47956f738738b2bfb695aaf95eb28baf}{\-\_\-\-\_\-construct} (\$api\-\_\-key= '')
+\item 
+\hyperlink{class_c_r_o_n_o_s_ad64f4ec196f102f4e1e3c68bdf4b9656}{list\-Stations} (\$networks=array(), \$states=array(), \$exclude\-\_\-networks=array(), \$active\-\_\-only=false)
+\item 
+\hyperlink{class_c_r_o_n_o_s_aedba3a0b213df6019596727d2f2efe0d}{get\-Hourly\-Data} (\$stations=array(), \$start=\char`\"{}\char`\"{}, \$end=\char`\"{}\char`\"{}, \$params=array())
+\item 
+\hyperlink{class_c_r_o_n_o_s_a0c55f7f231d4130170d1b0c7d5dda0e5}{get\-Daily\-Data} (\$stations=array(), \$start=\char`\"{}\char`\"{}, \$end=\char`\"{}\char`\"{}, \$params=array())
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-The \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} class is the main interface to connect to the \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} database. 
+
+\-This class is used to connect to the \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} database. \-It provides a connection handler and convenience functions.
+
+\begin{DoxyRefDesc}{\-Todo}
+\item[\hyperlink{todo__todo000001}{\-Todo}]\-Add quality control flags to get\-Hourly\-Data and get\-Daily\-Data. (\-C\-V) 
+
+\-Add ability to parse the comments for parameters and station metadata (\-C\-V) 
+
+\-Organize the hourly and daily output array by \mbox{[}station\mbox{]}\mbox{[}date\mbox{]} = data vs. a list. (\-C\-V) \end{DoxyRefDesc}
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{class_c_r_o_n_o_s_a47956f738738b2bfb695aaf95eb28baf}{
+\index{\-C\-R\-O\-N\-O\-S@{\-C\-R\-O\-N\-O\-S}!\-\_\-\-\_\-construct@{\-\_\-\-\_\-construct}}
+\index{\-\_\-\-\_\-construct@{\-\_\-\-\_\-construct}!CRONOS@{\-C\-R\-O\-N\-O\-S}}
+\subsubsection[{\-\_\-\-\_\-construct}]{\setlength{\rightskip}{0pt plus 5cm}\-\_\-\-\_\-construct (
+\begin{DoxyParamCaption}
+\item[{\$}]{api\-\_\-key = {\ttfamily ''}}
+\end{DoxyParamCaption}
+)}}
+\label{class_c_r_o_n_o_s_a47956f738738b2bfb695aaf95eb28baf}
+\-Creates a new \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} instance.
+
+\-A new \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} instance is created using your \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} \-A\-P\-I key. \-If you need a key, email \href{mailto:sco@climate.ncsu.edu}{\tt sco@climate.\-ncsu.\-edu}.
+
+
+\begin{DoxyParams}[1]{\-Parameters}
+string & {\em \$api\-\_\-key} & \-A string containing your \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} \-A\-P\-I key. \-D\-E\-F\-A\-U\-L\-T\-: '' \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{class_c_r_o_n_o_s_a0c55f7f231d4130170d1b0c7d5dda0e5}{
+\index{\-C\-R\-O\-N\-O\-S@{\-C\-R\-O\-N\-O\-S}!get\-Daily\-Data@{get\-Daily\-Data}}
+\index{get\-Daily\-Data@{get\-Daily\-Data}!CRONOS@{\-C\-R\-O\-N\-O\-S}}
+\subsubsection[{get\-Daily\-Data}]{\setlength{\rightskip}{0pt plus 5cm}get\-Daily\-Data (
+\begin{DoxyParamCaption}
+\item[{\$}]{stations = {\ttfamily array()}, }
+\item[{\$}]{start = {\ttfamily \char`\"{}\char`\"{}}, }
+\item[{\$}]{end = {\ttfamily \char`\"{}\char`\"{}}, }
+\item[{\$}]{params = {\ttfamily array()}}
+\end{DoxyParamCaption}
+)}}
+\label{class_c_r_o_n_o_s_a0c55f7f231d4130170d1b0c7d5dda0e5}
+\-Pull daily data from an array of stations.
+
+\-Pull daily data from an array of stations from the \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} database, based on a date window.
+
+
+\begin{DoxyParams}[1]{\-Parameters}
+array & {\em \$stations} & \-A list of station ids. \-D\-E\-F\-A\-U\-L\-T\-: array()\\
+\hline
+string & {\em \$start} & \-A starting date string formatted as \-Y\-Y\-Y\-Y-\/\-M\-M-\/\-D\-D \-D\-E\-F\-A\-U\-L\-T\-: ''\\
+\hline
+string & {\em \$end} & \-A ending date string formatted as \-Y\-Y\-Y-\/\-M\-M-\/\-D\-D \-D\-E\-F\-A\-U\-L\-T\-: ''\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\-An indexed array of associative arrays. \-The associcative arrays consist of the data provided by the station. \-They may or may not be consistant across networks. 
+\end{DoxyReturn}
+\hypertarget{class_c_r_o_n_o_s_aedba3a0b213df6019596727d2f2efe0d}{
+\index{\-C\-R\-O\-N\-O\-S@{\-C\-R\-O\-N\-O\-S}!get\-Hourly\-Data@{get\-Hourly\-Data}}
+\index{get\-Hourly\-Data@{get\-Hourly\-Data}!CRONOS@{\-C\-R\-O\-N\-O\-S}}
+\subsubsection[{get\-Hourly\-Data}]{\setlength{\rightskip}{0pt plus 5cm}get\-Hourly\-Data (
+\begin{DoxyParamCaption}
+\item[{\$}]{stations = {\ttfamily array()}, }
+\item[{\$}]{start = {\ttfamily \char`\"{}\char`\"{}}, }
+\item[{\$}]{end = {\ttfamily \char`\"{}\char`\"{}}, }
+\item[{\$}]{params = {\ttfamily array()}}
+\end{DoxyParamCaption}
+)}}
+\label{class_c_r_o_n_o_s_aedba3a0b213df6019596727d2f2efe0d}
+\-Pull hourly data from an array of stations.
+
+\-Pull hourly data from an array of stations from the \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} database, based on a time window.
+
+
+\begin{DoxyParams}[1]{\-Parameters}
+array & {\em \$stations} & \-A list of station ids. \-D\-E\-F\-A\-U\-L\-T\-: array()\\
+\hline
+string & {\em \$start} & \-A starting datetime string formatted as \-Y\-Y\-Y\-Y-\/\-M\-M-\/\-D\-D hh\-:mm\-:ss \-D\-E\-F\-A\-U\-L\-T\-: ''\\
+\hline
+string & {\em \$end} & \-A ending datetime string formatted as \-Y\-Y\-Y-\/\-M\-M-\/\-D\-D hh\-:mm\-:ss \-D\-E\-F\-A\-U\-L\-T\-: ''\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\-An indexed array of associative arrays. \-The associcative arrays consist of the data provided by the station. \-They may or may not be consistant across networks. 
+\end{DoxyReturn}
+\hypertarget{class_c_r_o_n_o_s_ad64f4ec196f102f4e1e3c68bdf4b9656}{
+\index{\-C\-R\-O\-N\-O\-S@{\-C\-R\-O\-N\-O\-S}!list\-Stations@{list\-Stations}}
+\index{list\-Stations@{list\-Stations}!CRONOS@{\-C\-R\-O\-N\-O\-S}}
+\subsubsection[{list\-Stations}]{\setlength{\rightskip}{0pt plus 5cm}list\-Stations (
+\begin{DoxyParamCaption}
+\item[{\$}]{networks = {\ttfamily array()}, }
+\item[{\$}]{states = {\ttfamily array()}, }
+\item[{\$}]{exclude\-\_\-networks = {\ttfamily array()}, }
+\item[{\$}]{active\-\_\-only = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}
+\label{class_c_r_o_n_o_s_ad64f4ec196f102f4e1e3c68bdf4b9656}
+\-List stations available, with filters.
+
+\-List all stations available in the \hyperlink{class_c_r_o_n_o_s}{\-C\-R\-O\-N\-O\-S} database as an array. \-Can be filtered according to network, state and whether or not a station is active.
+
+
+\begin{DoxyParams}[1]{\-Parameters}
+array & {\em \$networks} & \-The networks you want included in list. \-By passing an empty array, you will get all the networks available. \-D\-E\-F\-A\-U\-L\-T\-: array()\\
+\hline
+array & {\em \$states} & \-The states you want included in the list. \-By passing an empty array, you will receive all the states available. \-D\-E\-F\-A\-U\-L\-T\-: array()\\
+\hline
+array & {\em \$exclude\-\_\-networks} & \-The networks you would like excluded from the list. \-By passing an empty array, you will not exclude any networks. \-D\-E\-F\-A\-U\-L\-T\-: array()\\
+\hline
+bool & {\em \$active\-\_\-only} & \-Only include active stations in the list. \-D\-E\-F\-A\-U\-L\-T\-: false\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{\-Returns}
+\-An indexed array of associative arrays containing\-:
+\begin{DoxyItemize}
+\item station\-: \-The station id
+\item name\-: \-The name of the station
+\item lat\-: \-Latitude
+\item lon\-: \-Longitude
+\item elev\-: \-Elevation
+\item network\-: \-Network the station belongs to
+\item city\-: \-City
+\item county\-: \-County
+\item state\-: \-State
+\item huc\-: ??
+\item climdiv\-: \-Climate \-Division
+\item startdate\-: \-Date this station started reporting
+\item enddate\-: \-Date this station last reported
+\item active\-: 1 is the station is active, 0 if it is not. 
+\end{DoxyItemize}
+\end{DoxyReturn}
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{cronos_8php}{cronos.\-php}\end{DoxyCompactItemize}
